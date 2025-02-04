@@ -1,0 +1,149 @@
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+using System.Net;
+using Newtonsoft.Json;
+
+namespace ST_97355225fcdc4ab899f6ba342d3dc7f1
+{
+    /*La clase Main, contiene la Temperature, Pressure y Humidity*/
+    public class Main
+    {
+        public decimal Temp { get; set; }
+        public int Pressure { get; set; }
+        public int Humidity { get; set; }
+    }
+
+    /*La clase Wind, contiene Speed*/
+    public class Wind
+    {
+        public decimal Speed { get; set; }
+    }
+
+    /*La clase Weather contiene Description*/
+    public class Weather
+    {
+        public string Description { get; set; }
+    }
+
+    /*La clase Sys contiene Country*/
+    public class Sys
+    {
+        public string Country { get; set; }
+    }
+
+    /*La clase Root actúa como una clase contenedora o modelo de datos en C#. 
+      Es común en escenarios donde se recibe una respuesta en formato JSON desde una API 
+      y se deserializa en un objeto C#*/
+    public class Root
+    {
+        public Main Main { get; set; }
+        public Wind Wind { get; set; }
+        public Weather[] Weather { get; set; }
+        public Sys Sys { get; set; }
+    }
+
+
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+ 
+		public void Main()
+		{
+            // Obtener los valores de las variables de SSIS donde asignamos datos: la APIKey y los nombres de las ciudades
+            string apiKey = Dts.Variables["User::APIKey"].Value.ToString();
+            string city1 = Dts.Variables["User::City1"].Value.ToString();
+            string city2 = Dts.Variables["User::City2"].Value.ToString();
+            string city3 = Dts.Variables["User::City3"].Value.ToString();
+
+            // Construir la URL de la API que hace llamado a cada ciudad con el mismo APIKey
+            string url1 = $"http://api.openweathermap.org/data/2.5/weather?q={city1}&appid={apiKey}&units=metric";
+            string url2 = $"http://api.openweathermap.org/data/2.5/weather?q={city2}&appid={apiKey}&units=metric";
+            string url3 = $"http://api.openweathermap.org/data/2.5/weather?q={city3}&appid={apiKey}&units=metric";
+
+            //Try Catch para controlar errores
+            try
+            {
+                /*Crea una instancia de la clase WebClient para realizar solicitudes HTTP (Descargar archivos de una API o un archivo de Internet)*/
+                using (WebClient wc = new WebClient()) 
+                {
+
+                    //Descarga datos en formato JSON desde una URL y convierte ese JSON en un Objeto C# para cada ciudad.
+                    string json1 = wc.DownloadString(url1);
+                    Root root1 = JsonConvert.DeserializeObject<Root>(json1);
+
+                    string json2 = wc.DownloadString(url2);
+                    Root root2 = JsonConvert.DeserializeObject<Root>(json2);
+
+                    string json3 = wc.DownloadString(url3);
+                    Root root3 = JsonConvert.DeserializeObject<Root>(json3);
+
+
+                    // Extraer datos relevantes de Ciudad1
+                    string country1 = root1.Sys.Country.ToString();
+                    decimal temperature1 = root1.Main.Temp;
+                    int humidity1 = root1.Main.Humidity;
+                    int pressure1 = root1.Main.Pressure;
+                    decimal windSpeed1 = root1.Wind.Speed;
+                    string weatherDescription1 = root1.Weather[0].Description.ToString();
+
+
+                    // Guardar los datos en variables de SSIS de Ciudad1
+                    Dts.Variables["User::Country1"].Value = country1;
+                    Dts.Variables["User::Temperature1"].Value = temperature1;
+                    Dts.Variables["User::Humidity1"].Value = humidity1;
+                    Dts.Variables["User::Pressure1"].Value = pressure1;
+                    Dts.Variables["User::WindSpeed1"].Value = windSpeed1;
+                    Dts.Variables["User::WeatherDescription1"].Value = weatherDescription1;
+                    Dts.Variables["User::WeatherDescription1"].Value = weatherDescription1;
+
+                    // Extraer datos relevantes de Ciudad2
+                    string country2 = root2.Sys.Country.ToString();
+                    decimal temperature2 = root2.Main.Temp;
+                    int humidity2 = root2.Main.Humidity;
+                    int pressure2 = root2.Main.Pressure;
+                    decimal windSpeed2 = root2.Wind.Speed;
+                    string weatherDescription2 = root2.Weather[0].Description.ToString();
+
+                    // Guardar los datos en variables de SSIS de Ciudad2
+                    Dts.Variables["User::Country2"].Value = country2;
+                    Dts.Variables["User::Temperature2"].Value = temperature2;
+                    Dts.Variables["User::Humidity2"].Value = humidity2;
+                    Dts.Variables["User::Pressure2"].Value = pressure2;
+                    Dts.Variables["User::WindSpeed2"].Value = windSpeed2;
+                    Dts.Variables["User::WeatherDescription2"].Value = weatherDescription2;
+
+
+                    // Extraer datos relevantes de Ciudad3
+                    string country3 = root3.Sys.Country.ToString();
+                    decimal temperature3 = root3.Main.Temp;
+                    int humidity3 = root3.Main.Humidity;
+                    int pressure3 = root3.Main.Pressure;
+                    decimal windSpeed3 = root3.Wind.Speed;
+                    string weatherDescription3 = root3.Weather[0].Description.ToString();
+
+                    // Guardar los datos en variables de SSIS de Ciudad1
+                    Dts.Variables["User::Country3"].Value = country3;
+                    Dts.Variables["User::Temperature3"].Value = temperature3;
+                    Dts.Variables["User::Humidity3"].Value = humidity3;
+                    Dts.Variables["User::Pressure3"].Value = pressure3;
+                    Dts.Variables["User::WindSpeed3"].Value = windSpeed3;
+                    Dts.Variables["User::WeatherDescription3"].Value = weatherDescription3;
+
+                }
+                Dts.TaskResult = (int)ScriptResults.Success;
+            }
+            catch (Exception ex)
+            {
+                // Manejar errores
+                Dts.Events.FireError(0, "Script Task", ex.Message, string.Empty, 0);
+                Dts.TaskResult = (int)ScriptResults.Failure;
+            }
+
+            Dts.TaskResult = (int)ScriptResults.Success;
+		}
+
+
+	}
+}
