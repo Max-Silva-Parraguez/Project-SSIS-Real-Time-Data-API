@@ -1,11 +1,11 @@
-# PROJECT: Real-Time Data Integration from an API to SQL Server using SSIS
+# 🚀 PROJECT: Real-Time Data Integration from an API to SQL Server using SSIS
 
-## Description
+## 📌 Description
 This project aims to extract real-time weather data from the OpenWeatherMap API and load it into an SQL Server database using SQL Server Integration Services (SSIS). An automated ETL process is implemented with a scheduled task in SQL Server Agent for periodic execution.
 
 ---
 
-## **Project Steps**
+## ⚡ **Project Steps**
 
 ### **1. Obtaining an API Key from OpenWeatherMap**
 - Create an account on OpenWeatherMap and generate an API Key to retrieve the data. Desde: [https://openweathermap.org/api](https://openweathermap.org/api) 
@@ -42,7 +42,16 @@ This project aims to extract real-time weather data from the OpenWeatherMap API 
 
 ---
 
-## **Project Requirements**
+## 📊 **Technologies Used**  
+✅ **CSV como fuente de datos**  
+✅ **SQL Server**  
+✅ **SQL Server Agent**  
+✅ **Newtonsoft.Json)** library  
+✅ **SSIS (SQL Server Integration Services)** 
+
+---
+
+## 📥 **Project Requirements**
 
 - **SQL Server** with **SQL Server Integration Services (SSIS)** installed.
 - **Visual Studio** with the SSIS tools package.
@@ -51,7 +60,7 @@ This project aims to extract real-time weather data from the OpenWeatherMap API 
 
 ---
 
-## **How to Run the Project**
+## ⚙ **How to Run the Project**
 
 1. Obtain an API Key from OpenWeatherMap.
 2. Configure SSIS variables with the API Key and desired cities.
@@ -63,7 +72,7 @@ This project aims to extract real-time weather data from the OpenWeatherMap API 
 
 ---
 
-## **Conclusion**
+## 📊 **Conclusion**
 
 This project demonstrates how to extract real-time data from an API and store it in an SQL Server database using SSIS, with an automated execution every 30 seconds via SQL Server Agent.
 
